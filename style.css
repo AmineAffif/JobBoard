@@ -61,3 +61,26 @@ body {
   background-color: #ddd;
 }
 
+/* ----------------------------------------- FILTERS ----------------------------------------- */
+
+#filterForm {
+  margin-bottom: 20px;
+}
+
+#filterForm label,
+#filterForm select,
+#filterForm input[type="submit"] {
+  margin-right: 10px;
+}
+
+#filterForm select {
+  width: 150px;
+}
+
+fieldset {
+  margin-bottom: 10px;
+}
+
+label {
+  display: block;
+}
