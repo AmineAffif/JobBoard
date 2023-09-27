@@ -40,6 +40,23 @@ if (!empty($filters)) {
   $sql .= ' WHERE ' . implode(' AND ', $filters);
 }
 
+// Traitement du tri
+$sort = isset($_GET['sort']) ? $_GET['sort'] : '';
+switch ($sort) {
+  case 'date_asc':
+    $sql .= " ORDER BY o.date_publication ASC";
+    break;
+  case 'date_desc':
+    $sql .= " ORDER BY o.date_publication DESC";
+    break;
+  case 'alpha_asc':
+    $sql .= " ORDER BY o.intitule ASC";
+    break;
+  case 'alpha_desc':
+    $sql .= " ORDER BY o.intitule DESC";
+    break;
+}
+
 $sql .= " LIMIT $offres_par_page OFFSET $offset";
 
 $result = $mysqli->query($sql);
@@ -52,10 +69,7 @@ if (!empty($filters)) {
 }
 
 $total_offres = $mysqli->query($sql_count)->fetch_assoc()['total'];
-
-// Calculez le nombre total de pages en fonction du nombre d'offres résultantes
 $total_pages = ceil($total_offres / $offres_par_page);
-
 ?>
 
 <!DOCTYPE html>
@@ -109,6 +123,34 @@ $total_pages = ceil($total_offres / $offres_par_page);
       <input type="submit" value="Filtrer">
     </form>
 
+    <form action="index.php" method="get" id="sortForm">
+      <!-- Inclusion des paramètres de filtre actuels comme champs cachés -->
+      <?php
+      if (isset($_GET['metier'])) {
+        foreach ($_GET['metier'] as $value) {
+          echo '<input type="hidden" name="metier[]" value="' . htmlspecialchars($value) . '">';
+        }
+      }
+      if (isset($_GET['contrat'])) {
+        foreach ($_GET['contrat'] as $value) {
+          echo '<input type="hidden" name="contrat[]" value="' . htmlspecialchars($value) . '">';
+        }
+      }
+      if (isset($_GET['ville'])) {
+        foreach ($_GET['ville'] as $value) {
+          echo '<input type="hidden" name="ville[]" value="' . htmlspecialchars($value) . '">';
+        }
+      }
+      ?>
+
+      <label for="sort">Trier par :</label>
+      <select name="sort" id="sort" onchange="this.form.submit()">
+        <option value="date_asc" <?= $sort === 'date_asc' ? 'selected' : '' ?>>Date de publication (ascendant)</option>
+        <option value="date_desc" <?= $sort === 'date_desc' ? 'selected' : '' ?>>Date de publication (descendant)</option>
+        <option value="alpha_asc" <?= $sort === 'alpha_asc' ? 'selected' : '' ?>>Ordre alphabétique (ascendant)</option>
+        <option value="alpha_desc" <?= $sort === 'alpha_desc' ? 'selected' : '' ?>>Ordre alphabétique (descendant)</option>
+      </select>
+    </form>
 
     <?php
     while ($row = $result->fetch_assoc()) :
