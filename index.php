@@ -168,15 +168,15 @@ $total_pages = ceil($total_offres / $offres_par_page);
       $uniqueParam = time() . rand(); // Générer un paramètre unique pour avoir une image unique par job
     ?>
       <div class="offre">
-        <img src="https://random.imagecdn.app/150/150?<?= $uniqueParam ?>" alt="Image aléatoire"> <!-- Ajouter le paramètre unique à l'URL de l'image -->
+        <img src="https://random.imagecdn.app/150/150?<?= $uniqueParam ?>" alt="Image aléatoire">
         <div class="infos">
-          <p>Intitulé: <?= $row['intitule'] ?></p>
-          <p>Entreprise: <?= $row['entreprise'] ?></p>
-          <p>Métier: <?= $row['metier'] ?></p>
-          <p>Contrat: <?= $row['contrat'] ?></p>
-          <p>Ville: <?= $row['ville'] ?></p>
+          <p><strong>Intitulé:</strong>&nbsp; <?= $row['intitule'] ?></p>
+          <p><strong>Entreprise:</strong>&nbsp; <?= $row['entreprise'] ?></p>
+          <p><strong>Métier:</strong>&nbsp; <?= $row['metier'] ?></p>
+          <p><strong>Contrat:</strong>&nbsp; <?= $row['contrat'] ?></p>
+          <p><strong>Ville:</strong>&nbsp; <?= $row['ville'] ?></p>
           </br>
-          <p>Date de publication: <?= $formattedDate ?></p>
+          <p>Date de publication: &nbsp;<?= $formattedDate ?></p>
           <p>Référence: <?= $row['reference'] ?></p>
         </div>
       </div>
