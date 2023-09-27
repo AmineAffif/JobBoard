@@ -154,16 +154,20 @@ $total_pages = ceil($total_offres / $offres_par_page);
 
     <?php
     while ($row = $result->fetch_assoc()) :
+      $date = new DateTime($row['date_publication']);
+      $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::FULL, IntlDateFormatter::NONE);
+      $formattedDate = $formatter->format($date);
     ?>
       <div class="offre">
         <div class="image"><img src="https://via.placeholder.com/150" alt="Image"></div>
         <div class="infos">
-          <p>Date de publication: <?= $row['date_publication'] ?></p>
-          <p>Entreprise/Intitulé: <?= $row['entreprise'] ?>/<?= $row['intitule'] ?></p>
-          <p>Référence: <?= $row['reference'] ?></p>
+          <p>Intitulé: <?= $row['intitule'] ?></p>
+          <p>Entreprise: <?= $row['entreprise'] ?></p>
           <p>Métier: <?= $row['metier'] ?></p>
           <p>Contrat: <?= $row['contrat'] ?></p>
           <p>Ville: <?= $row['ville'] ?></p>
+          <p>Date de publication: <?= $formattedDate ?></p>
+          <p>Référence: <?= $row['reference'] ?></p>
         </div>
       </div>
     <?php endwhile; ?>
