@@ -157,9 +157,12 @@ $total_pages = ceil($total_offres / $offres_par_page);
       $date = new DateTime($row['date_publication']);
       $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::FULL, IntlDateFormatter::NONE);
       $formattedDate = $formatter->format($date);
+      $uniqueParam = time() . rand(); // Générer un paramètre unique pour avoir une image unique par job
     ?>
       <div class="offre">
-        <div class="image"><img src="https://via.placeholder.com/150" alt="Image"></div>
+        <div class="image">
+          <img src="https://random.imagecdn.app/150/150?<?= $uniqueParam ?>" alt="Image aléatoire"> <!-- Ajouter le paramètre unique à l'URL de l'image -->
+        </div>
         <div class="infos">
           <p>Intitulé: <?= $row['intitule'] ?></p>
           <p>Entreprise: <?= $row['entreprise'] ?></p>
