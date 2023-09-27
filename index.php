@@ -1,16 +1,9 @@
 <?php
-  ini_set('display_errors', 1);
-  ini_set('display_startup_errors', 1);
-  error_reporting(E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-  include './db.php'; // Incluez le fichier de connexion à la base de données
-
-  $result = $mysqli->query("SELECT * FROM offres");
-  while ($row = $result->fetch_assoc()) {
-    echo $row['intitule'] . '<br>';
-  }
-
-  $mysqli->close(); // Fermez la connexion à la base de données
+include './db.php';
 ?>
 
 <!DOCTYPE html>
@@ -19,20 +12,38 @@
 <head>
   <meta charset="UTF-8">
   <title>Job Board</title>
+  <link rel="stylesheet" href="./style.css">
   <style>
-    body {
-      font-family: Montserrat, Helvetica, sans-serif;
-      font-size: .9em;
-      color: #000000;
-      background-color: #FFFFFF;
-      margin: 0;
-      padding: 10px 20px 20px 20px;
-    }
   </style>
 </head>
 
 <body>
-  <p class="text"><strong>Welcome to MAMP</strong></p>
+  <div class="container">
+    <?php
+    $result = $mysqli->query("SELECT o.date_publication, e.nom as entreprise, o.intitule, o.reference, m.type as metier, c.type as contrat, v.nom as ville 
+                                  FROM offres o 
+                                  JOIN entreprises e ON o.entreprise_id = e.id
+                                  JOIN types_metier m ON o.type_metier_id = m.id
+                                  JOIN types_contrat c ON o.type_contrat_id = c.id
+                                  JOIN villes v ON o.ville_id = v.id");
+
+    while ($row = $result->fetch_assoc()) :
+    ?>
+      <div class="offre">
+        <div class="image"><img src="https://via.placeholder.com/150" alt="Image"></div>
+        <div class="infos">
+          <p>Date de publication: <?= $row['date_publication'] ?></p>
+          <p>Entreprise/Intitulé: <?= $row['entreprise'] ?>/<?= $row['intitule'] ?></p>
+          <p>Référence: <?= $row['reference'] ?></p>
+          <p>Métier: <?= $row['metier'] ?></p>
+          <p>Contrat: <?= $row['contrat'] ?></p>
+          <p>Ville: <?= $row['ville'] ?></p>
+        </div>
+      </div>
+    <?php endwhile; ?>
+
+    <?php $mysqli->close(); ?>
+  </div>
 </body>
 
 </html>

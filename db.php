@@ -17,4 +17,3 @@
     echo 'Error: '.$mysqli->connect_error;
     exit();
   }
-?>
