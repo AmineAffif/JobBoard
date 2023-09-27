@@ -82,75 +82,83 @@ $total_pages = ceil($total_offres / $offres_par_page);
 </head>
 
 <body>
+  <div class="header">
+    <p>Amine AFFIF - Développeur Backend</p>
+  </div>
   <div class="container">
-    <form action="index.php" method="get" id="filterForm">
-      <!-- Filtre pour Métier -->
-      <fieldset>
-        <legend>Métier:</legend>
+    <div class="filtersAndSort">
+      <form action="index.php" method="get" id="filterForm">
+        <div class="filtersContainer">
+          <!-- Filtre pour Métier -->
+          <fieldset>
+            <legend>Métier</legend>
+            <?php
+            $resultMetier = $mysqli->query("SELECT * FROM types_metier");
+            while ($row = $resultMetier->fetch_assoc()) {
+              $checked = isset($_GET['metier']) && in_array($row['id'], $_GET['metier']) ? 'checked' : '';
+              echo '<label><input type="checkbox" name="metier[]" value="' . $row['id'] . '" ' . $checked . '>' . $row['type'] . '</label>';
+            }
+            ?>
+          </fieldset>
+
+          <!-- Filtre pour Contrat -->
+          <fieldset>
+            <legend>Contrat</legend>
+            <?php
+            $resultContrat = $mysqli->query("SELECT * FROM types_contrat");
+            while ($row = $resultContrat->fetch_assoc()) {
+              $checked = isset($_GET['contrat']) && in_array($row['id'], $_GET['contrat']) ? 'checked' : '';
+              echo '<label><input type="checkbox" name="contrat[]" value="' . $row['id'] . '" ' . $checked . '>' . $row['type'] . '</label>';
+            }
+            ?>
+          </fieldset>
+
+          <!-- Filtre pour Ville -->
+          <fieldset>
+            <legend>Ville</legend>
+            <?php
+            $resultVille = $mysqli->query("SELECT * FROM villes");
+            while ($row = $resultVille->fetch_assoc()) {
+              $checked = isset($_GET['ville']) && in_array($row['id'], $_GET['ville']) ? 'checked' : '';
+              echo '<label><input type="checkbox" name="ville[]" value="' . $row['id'] . '" ' . $checked . '>' . $row['nom'] . '</label>';
+            }
+            ?>
+          </fieldset>
+        </div>
+
+        <input type="submit" value="Filtrer" id="submitFilters">
+      </form>
+
+      <form action="index.php" method="get" id="sortForm">
+        <!-- Inclusion des paramètres de filtre actuels comme champs cachés -->
         <?php
-        $resultMetier = $mysqli->query("SELECT * FROM types_metier");
-        while ($row = $resultMetier->fetch_assoc()) {
-          $checked = isset($_GET['metier']) && in_array($row['id'], $_GET['metier']) ? 'checked' : '';
-          echo '<label><input type="checkbox" name="metier[]" value="' . $row['id'] . '" ' . $checked . '>' . $row['type'] . '</label>';
+        if (isset($_GET['metier'])) {
+          foreach ($_GET['metier'] as $value) {
+            echo '<input type="hidden" name="metier[]" value="' . htmlspecialchars($value) . '">';
+          }
+        }
+        if (isset($_GET['contrat'])) {
+          foreach ($_GET['contrat'] as $value) {
+            echo '<input type="hidden" name="contrat[]" value="' . htmlspecialchars($value) . '">';
+          }
+        }
+        if (isset($_GET['ville'])) {
+          foreach ($_GET['ville'] as $value) {
+            echo '<input type="hidden" name="ville[]" value="' . htmlspecialchars($value) . '">';
+          }
         }
         ?>
-      </fieldset>
 
-      <!-- Filtre pour Contrat -->
-      <fieldset>
-        <legend>Contrat:</legend>
-        <?php
-        $resultContrat = $mysqli->query("SELECT * FROM types_contrat");
-        while ($row = $resultContrat->fetch_assoc()) {
-          $checked = isset($_GET['contrat']) && in_array($row['id'], $_GET['contrat']) ? 'checked' : '';
-          echo '<label><input type="checkbox" name="contrat[]" value="' . $row['id'] . '" ' . $checked . '>' . $row['type'] . '</label>';
-        }
-        ?>
-      </fieldset>
+        <label for="sort">Trier par :</label>
+        <select name="sort" id="sort" onchange="this.form.submit()">
+          <option value="date_asc" <?= $sort === 'date_asc' ? 'selected' : '' ?>>Date de publication (ascendant)</option>
+          <option value="date_desc" <?= $sort === 'date_desc' ? 'selected' : '' ?>>Date de publication (descendant)</option>
+          <option value="alpha_asc" <?= $sort === 'alpha_asc' ? 'selected' : '' ?>>Ordre alphabétique (ascendant)</option>
+          <option value="alpha_desc" <?= $sort === 'alpha_desc' ? 'selected' : '' ?>>Ordre alphabétique (descendant)</option>
+        </select>
+      </form>
+    </div>
 
-      <!-- Filtre pour Ville -->
-      <fieldset>
-        <legend>Ville:</legend>
-        <?php
-        $resultVille = $mysqli->query("SELECT * FROM villes");
-        while ($row = $resultVille->fetch_assoc()) {
-          $checked = isset($_GET['ville']) && in_array($row['id'], $_GET['ville']) ? 'checked' : '';
-          echo '<label><input type="checkbox" name="ville[]" value="' . $row['id'] . '" ' . $checked . '>' . $row['nom'] . '</label>';
-        }
-        ?>
-      </fieldset>
-
-      <input type="submit" value="Filtrer">
-    </form>
-
-    <form action="index.php" method="get" id="sortForm">
-      <!-- Inclusion des paramètres de filtre actuels comme champs cachés -->
-      <?php
-      if (isset($_GET['metier'])) {
-        foreach ($_GET['metier'] as $value) {
-          echo '<input type="hidden" name="metier[]" value="' . htmlspecialchars($value) . '">';
-        }
-      }
-      if (isset($_GET['contrat'])) {
-        foreach ($_GET['contrat'] as $value) {
-          echo '<input type="hidden" name="contrat[]" value="' . htmlspecialchars($value) . '">';
-        }
-      }
-      if (isset($_GET['ville'])) {
-        foreach ($_GET['ville'] as $value) {
-          echo '<input type="hidden" name="ville[]" value="' . htmlspecialchars($value) . '">';
-        }
-      }
-      ?>
-
-      <label for="sort">Trier par :</label>
-      <select name="sort" id="sort" onchange="this.form.submit()">
-        <option value="date_asc" <?= $sort === 'date_asc' ? 'selected' : '' ?>>Date de publication (ascendant)</option>
-        <option value="date_desc" <?= $sort === 'date_desc' ? 'selected' : '' ?>>Date de publication (descendant)</option>
-        <option value="alpha_asc" <?= $sort === 'alpha_asc' ? 'selected' : '' ?>>Ordre alphabétique (ascendant)</option>
-        <option value="alpha_desc" <?= $sort === 'alpha_desc' ? 'selected' : '' ?>>Ordre alphabétique (descendant)</option>
-      </select>
-    </form>
 
     <?php
     while ($row = $result->fetch_assoc()) :
@@ -160,15 +168,14 @@ $total_pages = ceil($total_offres / $offres_par_page);
       $uniqueParam = time() . rand(); // Générer un paramètre unique pour avoir une image unique par job
     ?>
       <div class="offre">
-        <div class="image">
-          <img src="https://random.imagecdn.app/150/150?<?= $uniqueParam ?>" alt="Image aléatoire"> <!-- Ajouter le paramètre unique à l'URL de l'image -->
-        </div>
+        <img src="https://random.imagecdn.app/150/150?<?= $uniqueParam ?>" alt="Image aléatoire"> <!-- Ajouter le paramètre unique à l'URL de l'image -->
         <div class="infos">
           <p>Intitulé: <?= $row['intitule'] ?></p>
           <p>Entreprise: <?= $row['entreprise'] ?></p>
           <p>Métier: <?= $row['metier'] ?></p>
           <p>Contrat: <?= $row['contrat'] ?></p>
           <p>Ville: <?= $row['ville'] ?></p>
+          </br>
           <p>Date de publication: <?= $formattedDate ?></p>
           <p>Référence: <?= $row['reference'] ?></p>
         </div>
