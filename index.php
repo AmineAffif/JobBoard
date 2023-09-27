@@ -4,6 +4,15 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 include './db.php';
+
+$offres_par_page = 10;
+$current_page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($current_page - 1) * $offres_par_page;
+
+$result = $mysqli->query("SELECT COUNT(*) as total FROM offres");
+$row = $result->fetch_assoc();
+$total_offres = $row['total'];
+$total_pages = ceil($total_offres / $offres_par_page);
 ?>
 
 <!DOCTYPE html>
@@ -25,7 +34,8 @@ include './db.php';
                                   JOIN entreprises e ON o.entreprise_id = e.id
                                   JOIN types_metier m ON o.type_metier_id = m.id
                                   JOIN types_contrat c ON o.type_contrat_id = c.id
-                                  JOIN villes v ON o.ville_id = v.id");
+                                  JOIN villes v ON o.ville_id = v.id
+                                  LIMIT $offres_par_page OFFSET $offset");
 
     while ($row = $result->fetch_assoc()) :
     ?>
@@ -41,6 +51,12 @@ include './db.php';
         </div>
       </div>
     <?php endwhile; ?>
+
+    <div class="pagination">
+      <?php for ($page = 1; $page <= $total_pages; $page++) : ?>
+        <a href="index.php?page=<?= $page ?>"><?= $page ?></a>
+      <?php endfor; ?>
+    </div>
 
     <?php $mysqli->close(); ?>
   </div>
